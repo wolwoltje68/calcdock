@@ -4,6 +4,7 @@ import path from 'node:path';
 import cfg from './site.config.mjs';
 import { tools } from './src/tools.mjs';
 import { langs, privacyText } from './src/i18n.mjs';
+import { buildForSite } from './games/build-games.mjs';
 
 const OUT = 'dist';
 const base = new URL(cfg.baseUrl).pathname.replace(/\/$/, ''); // '' or '/calcdock'
@@ -45,7 +46,7 @@ function layout({ L, lang, title, desc, canonical, alternates = {}, body, jsonld
 <style>${css}</style>${jsonld.map(j => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join('')}${ads}${ga}</head>
 <body><header><div class="wrap"><a class="logo" href="${href(lang)}">${esc(cfg.siteName)}</a><nav class="langs">${langLinks}</nav></div></header>
 <main class="wrap">${body}</main>
-<footer><div class="wrap"><p>${L.disclaimer}</p><p><a href="${href(lang)}">${L.all}</a> · <a href="${href(lang, 'about')}">${L.about}</a> · <a href="${href(lang, 'privacy')}">${L.privacy}</a> · © ${new Date().getFullYear()} ${esc(cfg.siteName)}</p></div></footer>
+<footer><div class="wrap"><p>${L.disclaimer}</p><p><a href="${href(lang)}">${L.all}</a> · <a href="${href(lang, 'about')}">${L.about}</a> · <a href="${href(lang, 'privacy')}">${L.privacy}</a> · <a href="${base}/games/">Games</a> · © ${new Date().getFullYear()} ${esc(cfg.siteName)}</p></div></footer>
 </body></html>`;
 }
 
@@ -105,6 +106,12 @@ for (const lang of Object.keys(langs)) {
   staticPage(lang, 'about', L.aboutTitle, L.aboutBody + (cfg.contactEmail ? `<p>Contact: <a href="mailto:${cfg.contactEmail}">${cfg.contactEmail}</a></p>` : ''));
   staticPage(lang, 'privacy', L.privacyTitle, privacyText[lang](cfg));
 }
+
+const games = buildForSite(path.join(OUT, 'games'));
+write('games/index.html', layout({ L: langs.en, lang: 'en', title: `Free Online Games | ${cfg.siteName}`, desc: 'Free browser games – no download, no sign-up. Play instantly on phone or desktop.', canonical: `${cfg.baseUrl}/games/`,
+  body: `<h1>Free online games</h1><p class="lead">Quick puzzle games that run right in your browser – on phone or desktop. No download.</p><ul class="grid">${games.map(g => `<li><a href="${base}/games/${g}/"><strong>${g.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}</strong><span>Play now ▶</span></a></li>`).join('')}</ul>` }));
+urls.push({ loc: `${cfg.baseUrl}/games/`, alternates: {} });
+for (const g of games) urls.push({ loc: `${cfg.baseUrl}/games/${g}/`, alternates: {} });
 
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">

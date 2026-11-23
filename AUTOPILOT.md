@@ -31,6 +31,15 @@ Success metric: indexed pages × search impressions × clicks. Revenue follows t
 - Keep pages fast: no frameworks and no external JS other than AdSense/analytics.
 - Do not add tools whose output could cause real harm if wrong (medication dosing, etc.).
 
+## Track B: browser games (distributed via CrazyGames, also hosted on the own site)
+- Games live in `games/<name>/` (index.html + core.js + game.js). Rules live in core.js and are pure, so they can be tested and simulated.
+- Every game needs: a balance check with a bot (`sim.mjs`), a Chromium play test (`node games/test-game.mjs games/<name>`), and no JS errors.
+- Build a release with `node games/build-games.mjs --release && node games/make-covers.mjs`. This produces `release/` (gitignored), which the owner uploads.
+- Platform hooks: use the `P` adapter in game.js (CrazyGames SDK v3: loadingStop, gameplayStart/Stop, happytime, midgame ads only between levels). The game must run normally without the SDK.
+- Only original games: no clones of named games, their art or names. No external links inside the game.
+- Ideas: improve Cascade Pop (daily challenge, level map, more specials, then localise the UI), then build new original games in proven genres: block-fit puzzle, idle merge, one-tap arcade, word puzzle.
+- Alternate: one run on calculators, the next run on games.
+
 ## Backlog (top = next)
 1. Languages: add **German (de)** to all tools, then **Spanish (es)**, **French (fr)**, **Portuguese (pt-BR)**, **Italian (it)** and **Polish (pl)**. Add the entry in `src/i18n.mjs` with locale, currency and dir, plus a `text.<lang>` block per tool. Use local slugs (de: `prozentrechner`, `mehrwertsteuer-rechner`, `zinseszinsrechner`, ...).
 2. New evergreen tools, all languages:

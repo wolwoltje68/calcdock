@@ -7,6 +7,8 @@
 - [ ] Apply for Google AdSense once the site has ~20+ quality pages and some traffic. Put the `ca-pub-…` id in `site.config.mjs`.
 - [ ] **Custom domain (~€10/yr). Effectively required for AdSense** (github.io subpaths are not accepted). Then update `baseUrl`.
 
+- [ ] Create a CrazyGames developer account and upload `cascade-pop-crazygames.zip` with the cover images (built with `node games/build-games.mjs --release && node games/make-covers.mjs`).
+
 ## 2026-11-23 — v1
 - Built a static site generator (`build.mjs`), language-neutral tools plus per-language text (`src/tools.mjs`, `src/i18n.mjs`).
 - 10 calculators in EN + NL (26 pages): percentage, discount, VAT, compound interest, loan, hourly↔salary, days between dates, age, BMI (metric/imperial), weighted grade.
@@ -17,3 +19,9 @@
 
 ## 2026-11-23 — deploy fix
 - Switched to the standard two-job Pages workflow (upload-pages-artifact@v4 + deploy-pages@v4). The first deploy failed with 'No artifacts named github-pages'. Now green; site is live.
+
+## 2026-11-23 — game: Cascade Pop
+- Original tap-to-pop puzzle: 7×9 board, groups of 5+ make a bomb, 8+ make a line blast, specials chain. Score target within 20 moves; stars for moves left; progress saved.
+- Balanced with a greedy bot (`games/cascade-pop/sim.mjs`). Bot win rate is ~98% at L1, ~50% at L15 and ~15% at L26+ (target capped).
+- Colour-blind friendly glyphs, WebAudio sounds, CrazyGames SDK v3 adapter (midgame ad between levels only).
+- Hosted at /games/cascade-pop/ on the site. CrazyGames zip + 3 covers built for the owner to upload.
